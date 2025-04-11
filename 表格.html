@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sorting Algorithms Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        td {
+            width: 25%;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        img {
+            max-width: 100%; /* Ensure the image is responsive */
+            height: auto;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 25px;
+            width: 60%;
+            max-height: 80vh;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>Sorting Algorithms Visualization</h2>
+    
+    <table>
+        <tr>
+            <td>
+                <button onclick="showModal('quick')">Quick Sort</button>
+            </td>
+            <td>
+                <button onclick="showModal('insertion')">Insertion Sort</button>
+            </td>
+            <td>
+                <button onclick="showModal('shell')">Shell Sort</button>
+            </td>
+            <td>
+                <button onclick="showModal('heap')">Heap Sort</button>
+            </td>
+        </tr>
+        <tr>
+            <td><img src="image1.jpg" alt="Image 1"></td>
+            <td><img src="image2.jpg" alt="Image 2"></td>
+            <td><img src="image3.jpg" alt="Image 3"></td>
+            <td><img src="image4.jpg" alt="Image 4"></td>
+        </tr>
+    </table>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <pre id="modalCode"></pre>
+        </div>
+    </div>
+
+    <script>
+        const algorithms = {
+            quick: {
+                title: "Quick Sort",
+                description: "A divide and conquer algorithm that selects a 'pivot' element and partitions the array around the pivot. It has average O(n log n) complexity and is widely used in practice.",
+                code: `def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)`
+            },
+            insertion: {
+                title: "Insertion Sort",
+                description: "Builds the final sorted array one item at a time. Efficient for small datasets and mostly sorted data. Time complexity: O(n²) in worst case.",
+                code: `def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i-1
+        while j >=0 and key < arr[j]:
+            arr[j+1] = arr[j]
+            j -= 1
+        arr[j+1] = key
+    return arr`
+            },
+            shell: {
+                title: "Shell Sort",
+                description: "Generalization of insertion sort that allows exchange of items that are far apart. Improves performance by sorting sublists. Complexity varies with gap sequence.",
+                code: `def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap = gap // 2
+    return arr`
+            },
+            heap: {
+                title: "Heap Sort",
+                description: "Comparison-based sorting using a binary heap data structure. Has O(n log n) time complexity. Not stable but good for external sorting.",
+                code: `def heapify(arr, n, i):
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+    if l < n and arr[i] < arr[l]:
+        largest = l
+    if r < n and arr[largest] < arr[r]:
+        largest = r
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+def heap_sort(arr):
+    n = len(arr)
+    for i in range(n//2 - 1, -1, -1):
+        heapify(arr, n, i)
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
+    return arr`
+            }
+        };
+
+        function showModal(algorithm) {
+            const modal = document.getElementById("myModal");
+            const data = algorithms[algorithm];
+            
+            document.getElementById("modalTitle").textContent = data.title;
+            document.getElementById("modalDescription").textContent = data.description;
+            document.getElementById("modalCode").textContent = data.code;
+            
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("myModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
